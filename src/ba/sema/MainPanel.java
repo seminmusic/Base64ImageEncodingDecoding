@@ -24,6 +24,8 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import org.apache.commons.io.FilenameUtils;
+
 
 @SuppressWarnings("serial")
 public class MainPanel extends JPanel
@@ -181,18 +183,18 @@ public class MainPanel extends JPanel
 				String slikaIdString = txtSlikaId.getText().trim();
 				if (!slikaIdString.equalsIgnoreCase("")) 
 				{
-					Date startDownloada = new Date();
-					SlikaModel model = Baza.GetImageModelFromDatabase(Integer.parseInt(slikaIdString));
-					Date zavrsetakDownloada = new Date();
+					Date download_1 = new Date();
+						SlikaModel model = Baza.GetImageModelFromDatabase(Integer.parseInt(slikaIdString));
+					Date download_2 = new Date();
+					String download = "Download podataka slike iz baze: " + Helper.RazlikaVremena(download_1, download_2);
 					
-					String vremena = "Početak-Završetak downloada iz baze: " + dateFormat.format(startDownloada) + " - " + dateFormat.format(zavrsetakDownloada);
+					String folderZaSnimanje = FilenameUtils.concat(System.getProperty("user.dir"), "slike_download_iz_baze");
+					Date save_1 = new Date();
+						Helper.SaveImageModelToFile(model, folderZaSnimanje);
+					Date save_2 = new Date();
+					String save = "Snimanje slike u fajl: " + Helper.RazlikaVremena(save_1, save_2);
 					
-					long razlika = zavrsetakDownloada.getTime() - startDownloada.getTime();
-					String trajanje = "Trajanje downloada iz baze: " + TimeUnit.MILLISECONDS.toMillis(razlika) + " milisekundi, " + TimeUnit.MILLISECONDS.toSeconds(razlika) + " sekundi";
-					
-					lblDownloadStatus.setText("<html>" + model.toString() + "<div>" + vremena + "</div>" + "<div>" + trajanje + "</div>" + "</html>");
-					
-					System.out.println("currentPath: " + System.getProperty("user.dir"));
+					lblDownloadStatus.setText("<html>" + "<div>" + download + "</div>" + "<div>" + save + "</div>" + "</html>");
 				}
 			}
 		};

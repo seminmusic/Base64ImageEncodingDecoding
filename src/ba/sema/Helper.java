@@ -2,13 +2,14 @@ package ba.sema;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 
 
 public class Helper 
@@ -33,20 +34,6 @@ public class Helper
     }
     
     /*
-    public static String GetFileExtension(File file) 
-    {
-        String fileName = file.getName();
-        if (fileName.lastIndexOf(".") != -1 && fileName.lastIndexOf(".") != 0)
-        {
-        	return fileName.substring(fileName.lastIndexOf(".") + 1);
-        }
-        else 
-        {
-        	return "";
-        }
-    }
-    */
-    
     public static byte[] ImageToByte(File file) throws FileNotFoundException 
     {
         FileInputStream fis = new FileInputStream(file);
@@ -69,4 +56,42 @@ public class Helper
         
         return bytes;
     }
+    */
+    public static byte[] ImageToByte(File file)
+    {
+    	byte[] bytes = null;
+		try 
+		{
+			bytes = FileUtils.readFileToByteArray(file);
+		} 
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+		}
+    	return bytes;
+    }
+    
+    public static void SaveImageModelToFile(SlikaModel model, String folderZaSnimanje)
+    {
+    	String fileNaziv = "Iz baze - " + model.getNaziv() + "." + model.getEkstenzija();
+    	String fullPutanja = FilenameUtils.concat(folderZaSnimanje, fileNaziv);
+    	try 
+    	{
+			FileUtils.writeByteArrayToFile(new File(fullPutanja), model.getSlikaByte());
+		} 
+    	catch (IOException e) 
+    	{
+			e.printStackTrace();
+		}
+    }
+    
+    public static String RazlikaVremena(Date start, Date kraj)
+    {
+    	long razlika = kraj.getTime() - start.getTime();
+		long milisec = TimeUnit.MILLISECONDS.toMillis(razlika);
+		long sec = TimeUnit.MILLISECONDS.toSeconds(razlika);
+		
+		return sec + " sekundi, " + milisec + " milisekundi"; 
+    }
+    
 }

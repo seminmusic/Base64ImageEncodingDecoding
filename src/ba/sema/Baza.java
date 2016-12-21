@@ -1,7 +1,6 @@
 package ba.sema;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -49,15 +48,7 @@ public class Baza
 	
 	public static void SaveImageToDatabase(File file, int grupa) 
 	{
-		byte[] slikaByte = null;
-		try 
-		{
-			slikaByte = Helper.ImageToByte(file);
-		} 
-		catch (FileNotFoundException e1) 
-		{
-			e1.printStackTrace();
-		}
+		byte[] slikaByte = Helper.ImageToByte(file);
 		
 		Connection conn = null;
 		try 
