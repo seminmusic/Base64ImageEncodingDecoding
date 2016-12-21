@@ -6,8 +6,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -22,6 +20,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -29,10 +28,16 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 @SuppressWarnings("serial")
 public class MainPanel extends JPanel
 {
+	DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.SSS");
+	
 	JButton btnIzaberiSliku;
 	JFileChooser slikaChooser;
 	JLabel lblSlikaPreview;
 	JTextArea txtBase64Slika;
+	JLabel lblSlikaId;
+	JTextField txtSlikaId;
+	JButton btnDownloadSlike;
+	JLabel lblDownloadStatus;
 	
 	public void postaviKomponente() 
 	{
@@ -49,12 +54,32 @@ public class MainPanel extends JPanel
 		txtBase64Slika.setBounds(260, 90, 410, 150);
 		txtBase64Slika.setEditable(false);
 		txtBase64Slika.setLineWrap(true);
+		//
+		lblSlikaId = new JLabel("ID slike u bazi:");
+		lblSlikaId.setBounds(30, 270, 150, 30);
+		//
+		txtSlikaId = new JTextField();
+		txtSlikaId.setBounds(120, 270, 70, 31);
+		//
+		btnDownloadSlike = new JButton(" Download slike iz baze", UIManager.getIcon("FileView.fileIcon"));
+		btnDownloadSlike.setBounds(210, 270, 200, 30);
+		btnDownloadSlike.setFocusPainted(false);
+		btnDownloadSlike.addActionListener(btnDownloadSlikeListener());
+		//
+		lblDownloadStatus = new JLabel("");  // "<html><div>Test</div><div>Opet</div></html>"
+		lblDownloadStatus.setBounds(30, 320, 640, 100);
+		lblDownloadStatus.setBorder(BorderFactory.createLineBorder(Color.gray, 1));
+		lblDownloadStatus.setVerticalAlignment(JLabel.TOP);
 		
 		add(btnIzaberiSliku);
 		add(lblSlikaPreview);
 		add(txtBase64Slika);
+		add(lblSlikaId);
+		add(txtSlikaId);
+		add(btnDownloadSlike);
+		add(lblDownloadStatus);
 	}
-	
+
 	private ActionListener btnIzaberiSlikuListener() 
 	{
 		return new ActionListener() 
@@ -87,7 +112,6 @@ public class MainPanel extends JPanel
 						e1.printStackTrace();
 					}
 					
-					DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.SSS");
 					Date startSnimanja = new Date();
 					System.out.println("Start snimanja: " + dateFormat.format(startSnimanja));
 					//
@@ -146,4 +170,32 @@ public class MainPanel extends JPanel
 			}
 		};
 	}
+	
+	private ActionListener btnDownloadSlikeListener() 
+	{
+		return new ActionListener() 
+		{
+			@Override
+			public void actionPerformed(ActionEvent e) 
+			{
+				String slikaIdString = txtSlikaId.getText().trim();
+				if (!slikaIdString.equalsIgnoreCase("")) 
+				{
+					Date startDownloada = new Date();
+					SlikaModel model = Baza.GetImageModelFromDatabase(Integer.parseInt(slikaIdString));
+					Date zavrsetakDownloada = new Date();
+					
+					String vremena = "Početak-Završetak downloada iz baze: " + dateFormat.format(startDownloada) + " - " + dateFormat.format(zavrsetakDownloada);
+					
+					long razlika = zavrsetakDownloada.getTime() - startDownloada.getTime();
+					String trajanje = "Trajanje downloada iz baze: " + TimeUnit.MILLISECONDS.toMillis(razlika) + " milisekundi, " + TimeUnit.MILLISECONDS.toSeconds(razlika) + " sekundi";
+					
+					lblDownloadStatus.setText("<html>" + model.toString() + "<div>" + vremena + "</div>" + "<div>" + trajanje + "</div>" + "</html>");
+					
+					System.out.println("currentPath: " + System.getProperty("user.dir"));
+				}
+			}
+		};
+	}
+	
 }

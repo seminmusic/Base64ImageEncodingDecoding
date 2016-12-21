@@ -5,7 +5,10 @@ import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import org.apache.commons.io.FilenameUtils;
 
 
 public class Baza 
@@ -60,10 +63,11 @@ public class Baza
 		try 
 		{
 			conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/sema_test_db", "postgres", "postgres");
-			PreparedStatement ps = conn.prepareStatement("INSERT INTO captcha_slike (nazivslike, slika, grupa_id) VALUES (?, ?, ?)");
-			ps.setString(1, file.getName());
-			ps.setBytes(2, slikaByte);
-			ps.setInt(3, grupa);
+			PreparedStatement ps = conn.prepareStatement("INSERT INTO captcha_slike (nazivslike, ekstenzija, slika, grupa_id) VALUES (?, ?, ?, ?)");
+			ps.setString(1, FilenameUtils.getBaseName(file.getName()));
+			ps.setString(2, FilenameUtils.getExtension(file.getName()));
+			ps.setBytes(3, slikaByte);
+			ps.setInt(4, grupa);
 			
 			ps.executeUpdate();
 			ps.close();
@@ -83,5 +87,46 @@ public class Baza
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public static SlikaModel GetImageModelFromDatabase(int id) 
+	{
+		SlikaModel model = new SlikaModel();
+		Connection conn = null;
+		try 
+		{
+			conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/sema_test_db", "postgres", "postgres");
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM captcha_slike WHERE id = ?");
+			ps.setInt(1, id);
+			
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) 
+			{
+				model.setId(rs.getInt(1));
+				model.setNaziv(rs.getString(2));
+				model.setEkstenzija(rs.getString(3));
+				model.setSlikaByte(rs.getBytes(4));
+				model.setGrupaId(rs.getInt(5));
+			}
+			
+			rs.close();
+			ps.close();
+		}
+		catch (SQLException e) 
+		{
+			e.printStackTrace();
+		} 
+		finally 
+		{
+			try 
+			{
+				conn.close();
+			} 
+			catch (SQLException e) 
+			{
+				e.printStackTrace();
+			}
+		}
+		return model;
 	}
 }

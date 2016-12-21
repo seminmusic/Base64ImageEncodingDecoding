@@ -32,6 +32,21 @@ public class Helper
     	return Base64.decodeBase64(imageDataString);
     }
     
+    /*
+    public static String GetFileExtension(File file) 
+    {
+        String fileName = file.getName();
+        if (fileName.lastIndexOf(".") != -1 && fileName.lastIndexOf(".") != 0)
+        {
+        	return fileName.substring(fileName.lastIndexOf(".") + 1);
+        }
+        else 
+        {
+        	return "";
+        }
+    }
+    */
+    
     public static byte[] ImageToByte(File file) throws FileNotFoundException 
     {
         FileInputStream fis = new FileInputStream(file);
@@ -50,7 +65,7 @@ public class Helper
         	
         }
         byte[] bytes = bos.toByteArray();
-        System.out.println("Read " + bytes.length + " bytes from file");
+        System.out.println("Read " + bytes.length + " bytes from file " + file.getName());
         
         return bytes;
     }
