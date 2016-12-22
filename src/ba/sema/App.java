@@ -21,7 +21,7 @@ public class App
 	
 	public static void main(String[] args) 
 	{
-		boolean startGUI = true;
+		boolean startGUI = false;
 		
 		if (startGUI) 
 		{
@@ -50,50 +50,8 @@ public class App
 			int brojRandomSlika = 6;
 			int brojTacnihSlika = 3;
 			
-			Date db_1 = new Date();
-				List<SlikaGrupaModel> listaRandomSlika = Baza.GetRandomImageModelsFromDatabase(brojRandomSlika);
-			Date db_2 = new Date();
-			System.out.println("\nUčitavanje liste od " + brojRandomSlika + " modela slika iz baze: " + Helper.RazlikaVremena(db_1, db_2));
-			System.out.println("\nUčitani podaci:");
-			for (SlikaGrupaModel model : listaRandomSlika) 
-			{
-				System.out.println(model.toString());
-			}
-			
-			int[] idRandomSlika = listaRandomSlika.stream().map(s -> s.getId()).mapToInt(i -> i).toArray();
-			System.out.println("\nID-ovi: " + Arrays.toString(idRandomSlika));
-			int[] randomIndexiSlika = Helper.RandomIndexiNiza(idRandomSlika, brojTacnihSlika);
-			System.out.println("Random " + brojTacnihSlika + " indexa: " + Arrays.toString(randomIndexiSlika));
-			
-			List<SlikaGrupaModel> listaTacnihSlika = new ArrayList<SlikaGrupaModel>();
-			for (int index : randomIndexiSlika)
-			{
-				int id = idRandomSlika[index];
-				SlikaGrupaModel tacan = listaRandomSlika.stream().filter(s -> s.getId() == id).findFirst().get();
-				listaTacnihSlika.add(tacan);
-			}
-			System.out.println("\nTačni podaci:");
-			for (SlikaGrupaModel model : listaTacnihSlika)
-			{
-				System.out.println(model.toString());
-			}
-			
-			int[] idCorrectAnswers = listaTacnihSlika.stream().map(s -> s.getId()).mapToInt(i -> i).toArray();
-			System.out.println("\nCorrect Answers: " + Arrays.toString(idCorrectAnswers));
-			
-			List<String> naziviGrupa = listaTacnihSlika.stream().map(s -> s.getGrupa_naziv()).collect(Collectors.toList());
-			String securityQuestion = "Odaberite ";
-			if (naziviGrupa.size() > 1) 
-			{
-				String naziviGrupaJoin = String.join(", ", naziviGrupa);
-				String naziviGrupaFormatirani = new StringBuilder(naziviGrupaJoin).replace(naziviGrupaJoin.lastIndexOf(","), naziviGrupaJoin.lastIndexOf(",") + 1, " i").toString();
-				securityQuestion += naziviGrupaFormatirani + ".";
-			}
-			else if (naziviGrupa.size() == 1)
-			{
-				securityQuestion += naziviGrupa.get(0) + ".";
-			}
-			System.out.println("\nSecurity Question: " + securityQuestion);
+			ResponseModel response = Helper.GenerateResponseModel(brojRandomSlika, brojTacnihSlika);
+			System.out.println(response.toString());
 		}
 	}
 }
