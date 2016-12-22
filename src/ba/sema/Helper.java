@@ -5,6 +5,7 @@ import java.awt.Toolkit;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.codec.binary.Base64;
@@ -92,6 +93,11 @@ public class Helper
 		long sec = TimeUnit.MILLISECONDS.toSeconds(razlika);
 		
 		return sec + " sekundi, " + milisec + " milisekundi"; 
+    }
+    
+    public static int[] RandomIndexiNiza(int[] niz, int broj)
+    {
+    	return new Random().ints(0, niz.length).distinct().limit(broj).toArray();
     }
     
 }
