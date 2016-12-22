@@ -14,13 +14,17 @@ import org.apache.commons.io.FilenameUtils;
 
 public class Baza 
 {
+	private final static String db_url  = "jdbc:postgresql://localhost:5432/sema_test_db";
+	private final static String db_user = "postgres";
+	private final static String db_pass = "postgres";
+	
 	/*
 	public static void SnimiBase64String(String base64String)
 	{
 		Connection conn = null;
 		try 
 		{
-			conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/sema_test_db", "postgres", "postgres");
+			conn = DriverManager.getConnection(db_url, db_user, db_pass);
 			String sql = "INSERT INTO captcha_slike (id, \"slikaBase64\", grupa_id) VALUES (?, ?, ?)";
 			PreparedStatement stmt = conn.prepareStatement(sql);
 			stmt.setInt(1, 100);
@@ -55,7 +59,7 @@ public class Baza
 		Connection conn = null;
 		try 
 		{
-			conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/sema_test_db", "postgres", "postgres");
+			conn = DriverManager.getConnection(db_url, db_user, db_pass);
 			PreparedStatement ps = conn.prepareStatement("INSERT INTO captcha_slike (nazivslike, ekstenzija, slika, grupa_id) VALUES (?, ?, ?, ?)");
 			ps.setString(1, FilenameUtils.getBaseName(file.getName()));
 			ps.setString(2, FilenameUtils.getExtension(file.getName()));
@@ -88,7 +92,7 @@ public class Baza
 		Connection conn = null;
 		try 
 		{
-			conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/sema_test_db", "postgres", "postgres");
+			conn = DriverManager.getConnection(db_url, db_user, db_pass);
 			PreparedStatement ps = conn.prepareStatement("SELECT * FROM captcha_slike WHERE id = ?");
 			ps.setInt(1, id);
 			
@@ -129,7 +133,7 @@ public class Baza
 		Connection conn = null;
 		try 
 		{
-			conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/sema_test_db", "postgres", "postgres");
+			conn = DriverManager.getConnection(db_url, db_user, db_pass);
 			String upit = "SELECT SLIKA.*, GRUPA.naziv grupa_naziv FROM " +
 						  "( " +
 						  "    SELECT DISTINCT ON (grupa_id) id, nazivslike, ekstenzija, slika, grupa_id " + 

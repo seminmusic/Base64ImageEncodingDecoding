@@ -33,6 +33,8 @@ public class MainPanel extends JPanel
 	DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.SSS");
 	
 	JButton btnIzaberiSliku;
+	JLabel lblGrupaId;
+	JTextField txtGrupaId;
 	JFileChooser slikaChooser;
 	JLabel lblSlikaPreview;
 	JTextArea txtBase64Slika;
@@ -43,10 +45,16 @@ public class MainPanel extends JPanel
 	
 	public void postaviKomponente() 
 	{
-		btnIzaberiSliku = new JButton(" Izaberi sliku ...", UIManager.getIcon("FileView.fileIcon"));
+		btnIzaberiSliku = new JButton(" Izaberi slike ...", UIManager.getIcon("FileView.fileIcon"));
 		btnIzaberiSliku.setBounds(30, 30, 150, 30);
 		btnIzaberiSliku.setFocusPainted(false);
 		btnIzaberiSliku.addActionListener(btnIzaberiSlikuListener());
+		//
+		lblGrupaId = new JLabel("ID grupe u bazi:");
+		lblGrupaId.setBounds(200, 30, 100, 30);
+		//
+		txtGrupaId = new JTextField();
+		txtGrupaId.setBounds(295, 30, 70, 31);
 		//
 		lblSlikaPreview = new JLabel("");
 		lblSlikaPreview.setBounds(30, 90, 200, 150);
@@ -74,6 +82,8 @@ public class MainPanel extends JPanel
 		lblDownloadStatus.setVerticalAlignment(JLabel.TOP);
 		
 		add(btnIzaberiSliku);
+		add(lblGrupaId);
+		add(txtGrupaId);
 		add(lblSlikaPreview);
 		add(txtBase64Slika);
 		add(lblSlikaId);
@@ -92,7 +102,8 @@ public class MainPanel extends JPanel
 				UIManager.put("FileChooser.readOnly", Boolean.TRUE);  // Disable rename/new in chooser
 				slikaChooser = new JFileChooser();
 				slikaChooser.setCurrentDirectory(new java.io.File("."));
-				slikaChooser.setDialogTitle("Izaberi sliku");
+				slikaChooser.setDialogTitle("Izaberi slike");
+				slikaChooser.setMultiSelectionEnabled(true);
 				slikaChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 				slikaChooser.setAcceptAllFileFilterUsed(false);  // Disable the "All files" option
 				slikaChooser.setFileFilter(new FileNameExtensionFilter("Image Files", "jpg", "png", "gif", "jpeg"));
@@ -101,69 +112,76 @@ public class MainPanel extends JPanel
 				{
 					txtBase64Slika.setText("");
 					
-					File slikaFile = slikaChooser.getSelectedFile();
-					try 
-					{
-						Image slikaPreview = ImageIO.read(slikaFile).getScaledInstance(200, 150, BufferedImage.SCALE_SMOOTH);
-						ImageIcon iconPreview = new ImageIcon(slikaPreview);
-				        lblSlikaPreview.setIcon(iconPreview);
-				        lblSlikaPreview.setVisible(true);
-					} 
-					catch (IOException e1) 
-					{
-						e1.printStackTrace();
-					}
+					File[] slikeFiles = slikaChooser.getSelectedFiles();
 					
-					Date startSnimanja = new Date();
-					System.out.println("Start snimanja: " + dateFormat.format(startSnimanja));
-					//
-					Baza.SaveImageToDatabase(slikaFile, 3);
-					//
-					Date zavrsetakSnimanja = new Date();
-					System.out.println("Završetak snimanja: " + dateFormat.format(zavrsetakSnimanja));
-					//
-					long razlika = zavrsetakSnimanja.getTime() - startSnimanja.getTime();
-					long miliSec = TimeUnit.MILLISECONDS.toMillis(razlika);
-					long sec = TimeUnit.MILLISECONDS.toSeconds(razlika);
-					System.out.println("Trajanje snimanja: " + miliSec + " milisekundi, " + sec + " sekundi");
+					String grupaIdString = txtGrupaId.getText().trim();
+					if (!grupaIdString.equalsIgnoreCase("")) 
+					{
+						int grupaId = Integer.parseInt(grupaIdString);
 					
-					
-					/*
-					FileInputStream slikaStream = null;
-					String slikaBase64String = null;
-					try 
-					{
-						// Konverzija slike u bajte:
-						slikaStream = new FileInputStream(slikaFile);
-						byte slikaByte[] = new byte[(int) slikaFile.length()];
-			            slikaStream.read(slikaByte);
-			            
-			            // Konverzija bajta slike u Base64 string:
-			            slikaBase64String = Helper.Base64EncodeImage(slikaByte);
-					} 
-					catch (FileNotFoundException e1) 
-					{
-						e1.printStackTrace();
-					} 
-					catch (IOException e2) 
-					{
-						e2.printStackTrace();
-					}
-					finally 
-					{
+						/*
 						try 
 						{
-							slikaStream.close();
+							Image slikaPreview = ImageIO.read(slikaFile).getScaledInstance(200, 150, BufferedImage.SCALE_SMOOTH);
+							ImageIcon iconPreview = new ImageIcon(slikaPreview);
+					        lblSlikaPreview.setIcon(iconPreview);
+					        lblSlikaPreview.setVisible(true);
 						} 
 						catch (IOException e1) 
 						{
 							e1.printStackTrace();
 						}
-					}
+						*/
 					
-					txtBase64Slika.setText(slikaBase64String);
-					Baza.SnimiBase64String(slikaBase64String);
-					*/
+						Date snimanje_1 = new Date();
+						System.out.println("Start snimanja: " + dateFormat.format(snimanje_1));
+						//
+						for (File slikaFile : slikeFiles)
+						{
+							Baza.SaveImageToDatabase(slikaFile, grupaId);
+						}
+						//
+						Date snimanje_2 = new Date();
+						System.out.println("Završetak snimanja: " + dateFormat.format(snimanje_2));
+						System.out.println("Trajanje snimanja: " + Helper.RazlikaVremena(snimanje_1, snimanje_2));
+						
+						/*
+						FileInputStream slikaStream = null;
+						String slikaBase64String = null;
+						try 
+						{
+							// Konverzija slike u bajte:
+							slikaStream = new FileInputStream(slikaFile);
+							byte slikaByte[] = new byte[(int) slikaFile.length()];
+				            slikaStream.read(slikaByte);
+				            
+				            // Konverzija bajta slike u Base64 string:
+				            slikaBase64String = Helper.Base64EncodeImage(slikaByte);
+						} 
+						catch (FileNotFoundException e1) 
+						{
+							e1.printStackTrace();
+						} 
+						catch (IOException e2) 
+						{
+							e2.printStackTrace();
+						}
+						finally 
+						{
+							try 
+							{
+								slikaStream.close();
+							} 
+							catch (IOException e1) 
+							{
+								e1.printStackTrace();
+							}
+						}
+						
+						txtBase64Slika.setText(slikaBase64String);
+						Baza.SnimiBase64String(slikaBase64String);
+						*/
+					}
 				} 
 				else 
 				{

@@ -6,7 +6,6 @@ import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,7 +21,7 @@ public class App
 	
 	public static void main(String[] args) 
 	{
-		boolean startGUI = false;
+		boolean startGUI = true;
 		
 		if (startGUI) 
 		{
