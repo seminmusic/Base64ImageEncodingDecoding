@@ -3,12 +3,7 @@ package ba.sema;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import javax.swing.JFrame;
 
 
@@ -50,8 +45,12 @@ public class App
 			int brojRandomSlika = 6;
 			int brojTacnihSlika = 3;
 			
+			Date res_1 = new Date();
 			ResponseModel response = Helper.GenerateResponseModel(brojRandomSlika, brojTacnihSlika);
+			Date res_2 = new Date();
 			System.out.println(response.toString());
+			System.out.println("Generisanje response modela: " + Helper.RazlikaVremena(res_1, res_2));
+			System.out.println("----------------------------------------------------------------------------\n");
 		}
 	}
 }

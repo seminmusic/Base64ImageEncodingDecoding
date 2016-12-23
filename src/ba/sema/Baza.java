@@ -14,7 +14,7 @@ import org.apache.commons.io.FilenameUtils;
 
 public class Baza 
 {
-	private final static String db_url  = "jdbc:postgresql://localhost:5432/sema_test_db";
+	private final static String db_url  = "jdbc:postgresql://172.16.0.51:5432/Bampay";  // "jdbc:postgresql://localhost:5432/sema_test_db";
 	private final static String db_user = "postgres";
 	private final static String db_pass = "postgres";
 	

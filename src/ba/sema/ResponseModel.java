@@ -33,6 +33,9 @@ public class ResponseModel
 	{
 		StringBuilder sb = new StringBuilder();
 		//
+		sb.append("\n----------------------------------------------------------------------------\n");
+		sb.append("RESPONSE MODEL:\n");
+		sb.append("---------------\n");
 		sb.append("Security Question: " + securityQuestion + "\n");
 		sb.append("Slike:\n");
 		sb.append("[\n");
@@ -45,6 +48,7 @@ public class ResponseModel
 		}
 		sb.append("]\n");
 		sb.append("Correct Answers: " + Arrays.toString(correctAnswers) + "\n");
+		sb.append("----------------------------------------------------------------------------");
 		//
 		return sb.toString();
 	}
