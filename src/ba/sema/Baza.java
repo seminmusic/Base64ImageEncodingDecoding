@@ -14,7 +14,8 @@ import org.apache.commons.io.FilenameUtils;
 
 public class Baza 
 {
-	private final static String db_url  = "jdbc:postgresql://172.16.0.51:5432/Bampay";  // "jdbc:postgresql://localhost:5432/sema_test_db";
+	//private final static String db_url  = "jdbc:postgresql://172.16.0.51:5432/Bampay";  // "jdbc:postgresql://localhost:5432/sema_test_db";
+	private final static String db_url  = "jdbc:postgresql://172.16.0.51:5432/BampayNew";
 	private final static String db_user = "postgres";
 	private final static String db_pass = "postgres";
 	
@@ -60,7 +61,8 @@ public class Baza
 		try 
 		{
 			conn = DriverManager.getConnection(db_url, db_user, db_pass);
-			PreparedStatement ps = conn.prepareStatement("INSERT INTO captcha_slike (nazivslike, ekstenzija, slika, grupa_id) VALUES (?, ?, ?, ?)");
+			//PreparedStatement ps = conn.prepareStatement("INSERT INTO captcha_slike (nazivslike, ekstenzija, slika, grupa_id) VALUES (?, ?, ?, ?)");
+			PreparedStatement ps = conn.prepareStatement("INSERT INTO captcha_images (imagename, imageextension, image, group_id) VALUES (?, ?, ?, ?)");
 			ps.setString(1, FilenameUtils.getBaseName(file.getName()));
 			ps.setString(2, FilenameUtils.getExtension(file.getName()));
 			ps.setBytes(3, slikaByte);
